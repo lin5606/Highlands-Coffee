@@ -1,5 +1,8 @@
 package enums;
 
-public class OrderStatus {
-
+public enum OrderStatus {
+    PENDING,     
+    CONFIRMED,   
+    COMPLETED,  
+    CANCELLED
 }

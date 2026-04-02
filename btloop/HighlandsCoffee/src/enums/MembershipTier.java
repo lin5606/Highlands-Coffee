@@ -1,5 +1,7 @@
 package enums;
 
-public class MembershipTier {
-
+public enum MembershipTier {
+    DONG,   
+    BAC,    
+    VANG    
 }

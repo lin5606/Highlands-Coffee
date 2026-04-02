@@ -1,5 +1,7 @@
 package enums;
 
-public class TableStatus {
-
+public enum TableStatus {
+    TRONG,       
+    DANG_SU_DUNG, 
+    DA_DAT       
 }
