@@ -6,19 +6,25 @@ import enums.OrderStatus;
 public class Order {
     private String Order_id;
     private Date Order_date;
+    private Staff staff;
+    private Customer customer;
     private float Total_amount;
     private OrderStatus Order_status;
 
     //constructor
     public Order(){
-        this.Order_id="";
-        this.Order_date=null;
-        this.Total_amount=0;
-        this.Order_status=OrderStatus.PENDING;
+        Order_id="";
+        Order_date=null;
+        staff=null;
+        customer=null;
+        Total_amount=0;
+        Order_status=OrderStatus.PENDING;
     }
-    public Order(String orderid, Date orderdate, float totalamount, OrderStatus orderstatus){
+    public Order(String orderid, Date orderdate, Staff staff, Customer customer, float totalamount, OrderStatus orderstatus){
         this.Order_id=orderid;
         this.Order_date=orderdate;
+        this.staff=staff;
+        this.customer=customer;
         this.Total_amount=totalamount;
         this.Order_status=orderstatus;
     }
@@ -29,6 +35,12 @@ public class Order {
     }
     public Date getOrder_date(){
         return Order_date;
+    }
+    public Staff getStaff(){
+        return staff;
+    }
+    public Customer getCustomer(){
+        return customer;
     }
     public float getTotal_amount(){
         return Total_amount;
@@ -43,6 +55,12 @@ public class Order {
     }
     public void setOrder_date(Date orderdate){
         this.Order_date=orderdate;
+    }
+    public void setStaff(Staff staff){
+        this.staff=staff;
+    }
+    public void setCustomer(Customer customer){
+        this.customer=customer;
     }
     public void setTotal_amount(float totalamount){
         this.Total_amount=totalamount;
