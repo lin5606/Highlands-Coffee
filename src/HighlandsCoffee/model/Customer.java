@@ -1,6 +1,6 @@
 package HighlandsCoffee.model;
 
-import enums.MembershipTier;
+import HighlandsCoffee.enums.MembershipTier;
 
 public class Customer {
     private String customerId; // Khóa chính
@@ -19,16 +19,16 @@ public class Customer {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.rewardPoints = 0; // Mặc định điểm ban đầu là 0
-        this.membershipTier = "Đồng"; // Mặc định hạng ban đầu là Đồng
+        this.membershipTier = MembershipTier.valueOf("DONG"); // Mặc định hạng ban đầu là Đồng
     }
 
     // --- Getters và Setters ---
 
-    public String getCustomerId() {
+    public String getCustomer_id() {
         return customerId;
     }
 
-    public void setCustomerId(String customerId) {
+    public void setCustomer_id(String customerId) {
         this.customerId = customerId;
     }
 
@@ -40,27 +40,27 @@ public class Customer {
         this.fullName = fullName;
     }
 
-    public String getPhoneNumber() {
+    public String getPhone_number() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setPhone_number(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    public int getRewardPoints() {
+    public int getReward_points() {
         return rewardPoints;
     }
 
-    public void setRewardPoints(int rewardPoints) {
+    public void setReward_points(int rewardPoints) {
         this.rewardPoints = rewardPoints;
     }
 
-    public String getMembershipTier() {
+    public MembershipTier getMembership_tier() {
         return membershipTier;
     }
 
-    public void setMembershipTier(String membershipTier) {
+    public void setMembership_tier(MembershipTier membershipTier) {
         this.membershipTier = membershipTier;
     }
 

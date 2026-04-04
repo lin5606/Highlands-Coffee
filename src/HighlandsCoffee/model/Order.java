@@ -1,7 +1,7 @@
 package HighlandsCoffee.model;
 
 import java.util.Date;
-import enums.OrderStatus;
+import HighlandsCoffee.enums.OrderStatus;
 
 public class Order {
     private String Order_id;

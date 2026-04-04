@@ -2,8 +2,6 @@ package HighlandsCoffee.dao;
 
 import HighlandsCoffee.model.Table;
 import HighlandsCoffee.enums.TableStatus;
-import HighlandsCoffee.service.DBContext;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

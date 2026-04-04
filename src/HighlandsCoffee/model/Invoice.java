@@ -87,8 +87,8 @@ public class Invoice {
         double tax = 0;
 
         for (InvoiceDetail d : details) {
-            amount += d.getSubTotal();
-            tax += d.getTaxAmount();
+            amount += d.getSubtotal();
+            tax += d.getTax_amount();
         }
 
         this.totalAmount = amount;

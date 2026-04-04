@@ -1,8 +1,7 @@
-package HighlandsCoffee;
 
 import HighlandsCoffee.dao.OrderDAO;
-import model.*;
-import enums.OrderStatus;
+import HighlandsCoffee.model.*;
+import HighlandsCoffee.enums.OrderStatus;
 
 import java.util.Date;
 import java.util.List;

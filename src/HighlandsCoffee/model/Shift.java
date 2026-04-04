@@ -1,7 +1,7 @@
 package HighlandsCoffee.model;
 
 import java.time.LocalDate;
-import enums.ShiftName;
+import HighlandsCoffee.enums.ShiftName;
 
 public class Shift {
     private int shiftId; // Mã ca làm [cite: 240, 305]
@@ -14,7 +14,7 @@ public class Shift {
     }
 
     // Constructor khởi tạo đầy đủ thông tin phân công
-    public Shift(int shiftId, Staff staff, String shiftName, LocalDate workDate) {
+    public Shift(int shiftId, Staff staff, ShiftName shiftName, LocalDate workDate) {
         this.shiftId = shiftId;
         this.staff = staff;
         this.shiftName = shiftName;
@@ -39,11 +39,11 @@ public class Shift {
         this.staff = staff;
     }
 
-    public String getShiftName() {
+    public ShiftName getShiftName() {
         return shiftName;
     }
 
-    public void setShiftName(String shiftName) {
+    public void setShiftName(ShiftName shiftName) {
         this.shiftName = shiftName;
     }
 

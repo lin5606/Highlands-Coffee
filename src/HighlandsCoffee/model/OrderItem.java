@@ -52,7 +52,7 @@ public class OrderItem {
         this.order=order;
     }
     public void setProduct(Product product){
-        this.Product=product;
+        this.product=product;
         if(product!=null){
             this.Price=product.getPrice();
         }

@@ -1,6 +1,6 @@
 package HighlandsCoffee.model;
 
-import enums.StaffPosition;
+import HighlandsCoffee.enums.StaffPosition;
 
 public class Staff extends User {
     private String staffId; // Mã nhân viên (Khóa chính) 
@@ -13,7 +13,7 @@ public class Staff extends User {
     }
 
     // Constructor khởi tạo nhân viên mới (bao gồm cả tài khoản kế thừa từ User)
-    public Staff(String username, String password, String staffId, String fullName, String position, double baseSalary) {
+    public Staff(String username, String password, String staffId, String fullName, StaffPosition position, double baseSalary) {
         super(username, password); // Kế thừa username và password từ lớp cha User
         this.staffId = staffId;
         this.fullName = fullName;
@@ -23,11 +23,11 @@ public class Staff extends User {
 
     // --- Getters và Setters ---
 
-    public String getStaffId() {
+    public String getStaff_id() {
         return staffId;
     }
 
-    public void setStaffId(String staffId) {
+    public void setStaff_id(String staffId) {
         this.staffId = staffId;
     }
 
@@ -39,19 +39,19 @@ public class Staff extends User {
         this.fullName = fullName;
     }
 
-    public String getPosition() {
+    public StaffPosition getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
+    public void setPosition(StaffPosition position) {
         this.position = position;
     }
 
-    public double getBaseSalary() {
+    public double getBase_salary() {
         return baseSalary;
     }
 
-    public void setBaseSalary(double baseSalary) {
+    public void setBase_salary(double baseSalary) {
         this.baseSalary = baseSalary;
     }
 

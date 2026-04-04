@@ -1,4 +1,4 @@
-package enums;
+package HighlandsCoffee.enums;
 
 public enum MembershipTier {
     DONG,   

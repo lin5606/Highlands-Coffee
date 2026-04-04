@@ -1,8 +1,7 @@
 {
-    "java.project.sourcePaths": [
-        "src"
-    ],
-    "java.project.referencedLibraries": [
-        "HighlandsCoffee\\lib\\mssql-jdbc-13.4.0.jre11.jar"
-    ]
+  "java.project.sourcePaths": ["src"],
+  "java.project.outputPath": "bin",
+  "java.project.referencedLibraries": [
+    "lib/**/*.jar"
+  ]
 }

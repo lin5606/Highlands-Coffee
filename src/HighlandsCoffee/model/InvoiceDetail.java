@@ -1,115 +1,121 @@
 package HighlandsCoffee.model;
 
 public class InvoiceDetail {
-     private int invoiceId;
-    private Date invoiceDate;
+    private int detail_id;      // Primary key
+    private int invoice_id;     // Foreign key
+    private String product_name;
+    private int quantity;
+    private double unit_price;
+    private double subtotal;
+    private double tax_rate;
+    private double tax_amount;
+    private double total_price;
 
-    private double totalAmount; // Tổng trước thuế
-    private double totalTax;    // Tổng thuế
-    private double finalTotal;  // Tổng sau thuế
-
-    private Customer customer;
-    private List<InvoiceDetail> details;
-
-    // Constructor rỗng
-    public Invoice() {
-        this.details = new ArrayList<>();
+    // Constructor mặc định
+    public InvoiceDetail() {
     }
 
     // Constructor đầy đủ
-    public Invoice(int invoiceId, Date invoiceDate, Customer customer) {
-        this.invoiceId = invoiceId;
-        this.invoiceDate = invoiceDate;
-        this.customer = customer;
-        this.details = new ArrayList<>();
+    public InvoiceDetail(int detail_id, int invoice_id, String product_name,
+                         int quantity, double unit_price,
+                         double tax_rate) {
+        this.detail_id = detail_id;
+        this.invoice_id = invoice_id;
+        this.product_name = product_name;
+        setQuantity(quantity);
+        setUnit_price(unit_price);
+        setTax_rate(tax_rate);
+        calculateValues();
     }
 
-    // ================= GETTER & SETTER =================
-
-    public int getInvoiceId() {
-        return invoiceId;
+    // ================== Getter ==================
+    public int getDetail_id() {
+        return detail_id;
     }
 
-    public void setInvoiceId(int invoiceId) {
-        this.invoiceId = invoiceId;
+    public int getInvoice_id() {
+        return invoice_id;
     }
 
-    public Date getInvoiceDate() {
-        return invoiceDate;
+    public String getProduct_name() {
+        return product_name;
     }
 
-    public void setInvoiceDate(Date invoiceDate) {
-        this.invoiceDate = invoiceDate;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public double getTotalAmount() {
-        return totalAmount;
+    public double getUnit_price() {
+        return unit_price;
     }
 
-    public double getTotalTax() {
-        return totalTax;
+    public double getSubtotal() {
+        return subtotal;
     }
 
-    public double getFinalTotal() {
-        return finalTotal;
+    public double getTax_rate() {
+        return tax_rate;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public double getTax_amount() {
+        return tax_amount;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public double getTotal_price() {
+        return total_price;
     }
 
-    public List<InvoiceDetail> getDetails() {
-        return details;
+    // ================== Setter ==================
+    public void setDetail_id(int detail_id) {
+        this.detail_id = detail_id;
     }
 
-    // ================= NGHIỆP VỤ =================
+    public void setInvoice_id(int invoice_id) {
+        this.invoice_id = invoice_id;
+    }
 
-    // Thêm chi tiết hóa đơn
-    public void addDetail(InvoiceDetail detail) {
-        if (detail != null) {
-            details.add(detail);
-            recalculateTotals(); // Cập nhật ngay
+    public void setProduct_name(String product_name) {
+        this.product_name = product_name;
+    }
+
+    public void setQuantity(int quantity) {
+        if (quantity > 0) {
+            this.quantity = quantity;
+        } else {
+            throw new IllegalArgumentException("Quantity phải > 0");
         }
     }
 
-    // Tính lại toàn bộ tiền
-    public void recalculateTotals() {
-        double amount = 0;
-        double tax = 0;
-
-        for (InvoiceDetail d : details) {
-            amount += d.getSubTotal();
-            tax += d.getTaxAmount();
+    public void setUnit_price(double unit_price) {
+        if (unit_price >= 0) {
+            this.unit_price = unit_price;
+        } else {
+            throw new IllegalArgumentException("Unit price phải >= 0");
         }
-
-        this.totalAmount = amount;
-        this.totalTax = tax;
-        this.finalTotal = amount + tax;
     }
 
-    // Hiển thị
-    public void displayInvoice() {
-        System.out.println("===== HÓA ĐƠN =====");
-        System.out.println("Mã HĐ: " + invoiceId);
-        System.out.println("Ngày: " + invoiceDate);
-
-        if (customer != null) {
-            customer.displayInfo();
+    public void setTax_rate(double tax_rate) {
+        if (tax_rate >= 0) {
+            this.tax_rate = tax_rate;
+        } else {
+            throw new IllegalArgumentException("Tax rate phải >= 0");
         }
-
-        System.out.println("----- Chi tiết -----");
-        for (InvoiceDetail d : details) {
-            d.displayDetail();
-        }
-
-        System.out.println("-------------------");
-        System.out.println("Tổng trước thuế: " + totalAmount);
-        System.out.println("Tổng thuế: " + totalTax);
-        System.out.println("Thành tiền: " + finalTotal);
     }
-    
+
+    // ================== Tính toán ==================
+    public void calculateValues() {
+        this.subtotal = quantity * unit_price;
+        this.tax_amount = subtotal * tax_rate / 100;
+        this.total_price = subtotal + tax_amount;
+    }
+
+    // ================== Hiển thị ==================
+    public void displayDetail() {
+        System.out.printf("- SP: %-20s | SL: %2d | Đơn giá: %,10.0f | Thuế: %,8.0f | Tổng: %,10.0f%n", 
+            product_name, 
+            quantity, 
+            unit_price, 
+            tax_amount, 
+            total_price);
+    }
 }
