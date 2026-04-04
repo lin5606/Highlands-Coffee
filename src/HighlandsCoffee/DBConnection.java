@@ -1,4 +1,5 @@
-package config;
+package HighlandsCoffee;
+
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;

@@ -1,9 +1,11 @@
-package model;
+package HighlandsCoffee.model;
+
+import enums.StaffPosition;
 
 public class Staff extends User {
     private String staffId; // Mã nhân viên (Khóa chính) 
     private String fullName; // Họ và tên nhân viên 
-    private String position; // Chức vụ (Quản lý, Phục vụ, Thu ngân...) 
+    private StaffPosition position; // Chức vụ (Quản lý, Phục vụ, Thu ngân...) 
     private double baseSalary; // Lương cơ bản 
 
     // Constructor rỗng

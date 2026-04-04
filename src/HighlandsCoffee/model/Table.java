@@ -1,6 +1,6 @@
-package model;
+package HighlandsCoffee.model;
 
-import enums.TableStatus;
+import HighlandsCoffee.enums.TableStatus;
 
 public class Table {
     private String Table_id;

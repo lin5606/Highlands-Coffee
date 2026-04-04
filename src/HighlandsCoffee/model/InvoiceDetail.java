@@ -1,12 +1,7 @@
-package model;
+package HighlandsCoffee.model;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-public class Invoice {
-
-    private int invoiceId;
+public class InvoiceDetail {
+     private int invoiceId;
     private Date invoiceDate;
 
     private double totalAmount; // Tổng trước thuế
@@ -116,4 +111,5 @@ public class Invoice {
         System.out.println("Tổng thuế: " + totalTax);
         System.out.println("Thành tiền: " + finalTotal);
     }
+    
 }

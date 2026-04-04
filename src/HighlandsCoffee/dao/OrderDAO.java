@@ -1,4 +1,4 @@
-package highlandscoffee.dao;
+package HighlandsCoffee.dao;
 
 import model.*;
 import enums.OrderStatus;

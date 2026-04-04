@@ -1,4 +1,4 @@
-package model;
+package HighlandsCoffee.model;
 
 public class User {
     protected String username;

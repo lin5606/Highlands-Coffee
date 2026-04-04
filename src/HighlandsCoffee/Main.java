@@ -1,4 +1,4 @@
-package config;
+package HighlandsCoffee;
 
 import java.sql.Connection;
 

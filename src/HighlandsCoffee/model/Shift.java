@@ -1,11 +1,12 @@
-package model;
+package HighlandsCoffee.model;
 
 import java.time.LocalDate;
+import enums.ShiftName;
 
 public class Shift {
     private int shiftId; // Mã ca làm [cite: 240, 305]
     private Staff staff; // Đối tượng nhân viên được phân công 
-    private String shiftName; // Tên ca (Ca Sáng, Ca Chiều, Ca Tối) [cite: 240, 307]
+    private ShiftName shiftName; // Tên ca (Ca Sáng, Ca Chiều, Ca Tối) [cite: 240, 307]
     private LocalDate workDate; // Ngày làm việc dự kiến [cite: 240, 308]
 
     // Constructor rỗng

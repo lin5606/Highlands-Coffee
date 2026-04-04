@@ -1,4 +1,4 @@
-package highlandscoffee.model;
+package HighlandsCoffee.model;
 
 public class OrderItem {
 

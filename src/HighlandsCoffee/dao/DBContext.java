@@ -1,4 +1,4 @@
-package highlandscoffee.dao;
+package HighlandsCoffee.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

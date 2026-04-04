@@ -1,4 +1,4 @@
-package highlandscoffee.model;
+package HighlandsCoffee.model;
 
 import java.util.Date;
 import enums.OrderStatus;

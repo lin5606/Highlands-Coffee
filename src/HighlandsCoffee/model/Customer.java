@@ -1,11 +1,13 @@
-package model;
+package HighlandsCoffee.model;
+
+import enums.MembershipTier;
 
 public class Customer {
     private String customerId; // Khóa chính
     private String fullName; 
     private String phoneNumber; 
     private int rewardPoints; 
-    private String membershipTier; 
+    private MembershipTier membershipTier; 
 
     // Constructor rỗng
     public Customer() {

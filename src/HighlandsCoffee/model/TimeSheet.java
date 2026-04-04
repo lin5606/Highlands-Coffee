@@ -1,4 +1,5 @@
-package model;
+package HighlandsCoffee.model;
+
 import java.time.LocalDateTime;
 import java.time.Duration;
 
