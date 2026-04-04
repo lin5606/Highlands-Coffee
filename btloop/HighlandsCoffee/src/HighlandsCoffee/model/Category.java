@@ -1,4 +1,4 @@
-package model;
+package highlandscoffee.model;
 
 public class Category {
     private String Category_id;
