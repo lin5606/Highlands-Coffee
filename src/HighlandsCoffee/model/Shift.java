@@ -60,7 +60,7 @@ public class Shift {
     public void displaySchedule() {
         // Lấy tên nhân viên từ đối tượng staff để hiển thị cho trực quan
         String staffName = (staff != null) ? staff.getFullName() : "Chưa xác định";
-        String staffCode = (staff != null) ? staff.getStaffId() : "N/A";
+        String staffCode = (staff != null) ? staff.getStaff_id() : "N/A";
         
         System.out.println("Mã ca: " + shiftId + " | Ngày: " + workDate + 
                            " | Ca: " + shiftName + " | Nhân viên: " + staffName + " (" + staffCode + ")");

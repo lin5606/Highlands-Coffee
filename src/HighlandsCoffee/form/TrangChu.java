@@ -11,6 +11,7 @@ public class TrangChu extends javax.swing.JFrame {
 
     private String role;
     private String staffId;
+    
 
     public TrangChu() {
         initComponents();
@@ -53,6 +54,8 @@ public class TrangChu extends javax.swing.JFrame {
         btnNhanVien = new javax.swing.JButton();
         btnHoaDon = new javax.swing.JButton();
         btnThongKe = new javax.swing.JButton();
+        btnDangXuat = new javax.swing.JButton();
+        pnlMainContent = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1200, 800));
@@ -93,6 +96,7 @@ public class TrangChu extends javax.swing.JFrame {
         btnBanHang.setContentAreaFilled(false);
         btnBanHang.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         btnBanHang.setMargin(new java.awt.Insets(2, 20, 3, 14));
+        btnBanHang.addActionListener(this::btnBanHangActionPerformed);
         pnlMenu.add(btnBanHang);
 
         btnSanPham.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -146,7 +150,25 @@ public class TrangChu extends javax.swing.JFrame {
         btnThongKe.setMargin(new java.awt.Insets(2, 20, 3, 14));
         pnlMenu.add(btnThongKe);
 
+        btnDangXuat.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnDangXuat.setForeground(new java.awt.Color(204, 0, 0));
+        btnDangXuat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/HighlandsCoffee/images/Logout.png"))); // NOI18N
+        btnDangXuat.setText("Đăng xuất");
+        btnDangXuat.setBorderPainted(false);
+        btnDangXuat.setContentAreaFilled(false);
+        btnDangXuat.setFocusable(false);
+        btnDangXuat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnDangXuat.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnDangXuat.setIconTextGap(10);
+        btnDangXuat.setMargin(new java.awt.Insets(20, 10, 20, 10));
+        btnDangXuat.addActionListener(this::btnDangXuatActionPerformed);
+        pnlMenu.add(btnDangXuat);
+
         getContentPane().add(pnlMenu, java.awt.BorderLayout.LINE_START);
+
+        pnlMainContent.setBackground(new java.awt.Color(255, 255, 255));
+        pnlMainContent.setLayout(new java.awt.CardLayout());
+        getContentPane().add(pnlMainContent, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>                        
@@ -154,6 +176,23 @@ public class TrangChu extends javax.swing.JFrame {
     private void btnSanPhamActionPerformed(java.awt.event.ActionEvent evt) {                                           
         // TODO add your handling code here:
     }                                          
+
+    private void btnBanHangActionPerformed(java.awt.event.ActionEvent evt) {                                           
+     // TODO add your handling code here:
+    }                                          
+
+    private void btnDangXuatActionPerformed(java.awt.event.ActionEvent evt) {                                            
+        // TODO add your handling code here:
+        int confirm=javax.swing.JOptionPane.showConfirmDialog(this, 
+            "Bạn có chắc chắn muốn đăng xuất khỏi hệ thống?", 
+            "Xác nhận thoát", 
+            javax.swing.JOptionPane.YES_NO_OPTION,
+            javax.swing.JOptionPane.QUESTION_MESSAGE);
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+        this.dispose(); 
+        new DangNhap().setVisible(true); 
+    }
+    }                                           
 
     /**
      * @param args the command line arguments
@@ -183,6 +222,7 @@ public class TrangChu extends javax.swing.JFrame {
     // Variables declaration - do not modify                     
     private javax.swing.JButton btnBanAn;
     private javax.swing.JButton btnBanHang;
+    private javax.swing.JButton btnDangXuat;
     private javax.swing.JButton btnHoaDon;
     private javax.swing.JButton btnNhanVien;
     private javax.swing.JButton btnSanPham;
@@ -191,6 +231,7 @@ public class TrangChu extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel lblUsername;
     private javax.swing.JPanel pnlHeader;
+    private javax.swing.JPanel pnlMainContent;
     private javax.swing.JPanel pnlMenu;
     // End of variables declaration                   
 }
