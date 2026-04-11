@@ -1,24 +1,30 @@
 package HighlandsCoffee.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime; // Thêm thư viện này
 import HighlandsCoffee.enums.ShiftName;
 
 public class Shift {
-    private int shiftId; // Mã ca làm [cite: 240, 305]
-    private Staff staff; // Đối tượng nhân viên được phân công 
-    private ShiftName shiftName; // Tên ca (Ca Sáng, Ca Chiều, Ca Tối) [cite: 240, 307]
-    private LocalDate workDate; // Ngày làm việc dự kiến [cite: 240, 308]
+    private int shiftId; 
+    private Staff staff; 
+    private ShiftName shiftName; 
+    private LocalDate workDate; 
+    // BỔ SUNG 2 DÒNG NÀY ĐỂ HẾT LỖI Ở DAO
+    private LocalDateTime actualCheckIn; 
+    private LocalDateTime actualCheckOut;
 
     // Constructor rỗng
     public Shift() {
     }
 
-    // Constructor khởi tạo đầy đủ thông tin phân công
-    public Shift(int shiftId, Staff staff, ShiftName shiftName, LocalDate workDate) {
+    // Constructor khởi tạo đầy đủ (Cập nhật thêm 2 trường mới)
+    public Shift(int shiftId, Staff staff, ShiftName shiftName, LocalDate workDate, LocalDateTime actualCheckIn, LocalDateTime actualCheckOut) {
         this.shiftId = shiftId;
         this.staff = staff;
         this.shiftName = shiftName;
         this.workDate = workDate;
+        this.actualCheckIn = actualCheckIn;
+        this.actualCheckOut = actualCheckOut;
     }
 
     // --- Getters và Setters ---
@@ -55,10 +61,26 @@ public class Shift {
         this.workDate = workDate;
     }
 
+    // CÁC HÀM GETTER/SETTER MỚI THÊM VÀO
+    public LocalDateTime getActualCheckIn() {
+        return actualCheckIn;
+    }
+
+    public void setActualCheckIn(LocalDateTime actualCheckIn) {
+        this.actualCheckIn = actualCheckIn;
+    }
+
+    public LocalDateTime getActualCheckOut() {
+        return actualCheckOut;
+    }
+
+    public void setActualCheckOut(LocalDateTime actualCheckOut) {
+        this.actualCheckOut = actualCheckOut;
+    }
+
     // --- Phương thức nghiệp vụ ---
 
     public void displaySchedule() {
-        // Lấy tên nhân viên từ đối tượng staff để hiển thị cho trực quan
         String staffName = (staff != null) ? staff.getFullName() : "Chưa xác định";
         String staffCode = (staff != null) ? staff.getStaff_id() : "N/A";
         
@@ -66,4 +88,3 @@ public class Shift {
                            " | Ca: " + shiftName + " | Nhân viên: " + staffName + " (" + staffCode + ")");
     }
 }
-
