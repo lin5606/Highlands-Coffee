@@ -142,7 +142,7 @@ public class InvoiceDAO extends DBContext {
         Customer customer = new Customer();
         customer.setCustomer_id(rs.getString("customer_id")); 
         invoice.setCustomer(customer);
-        invoice.setTotalAmount(rs.getDouble("total_amount"));
+        invoice.setTotalTax(rs.getDouble("total_amount"));
         invoice.setTotalTax(rs.getDouble("total_tax"));
         invoice.setFinalTotal(rs.getDouble("final_total"));
 
