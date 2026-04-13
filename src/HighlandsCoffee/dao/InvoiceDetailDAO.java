@@ -185,8 +185,8 @@ public class InvoiceDetailDAO extends DBContext {
         detail.setUnit_price(rs.getDouble("unit_price"));
         detail.setTax_rate(rs.getDouble("tax_rate"));
         detail.setSubtotal(rs.getDouble("subtotal"));
-        detail.setTax_amount(rs.getDouble("tax_amount"));
-        detail.setTotal_price(rs.getDouble("total_price"));
+        detail.setTax_rate(rs.getDouble("tax_amount"));
+        detail.setUnit_price(rs.getDouble("total_price"));
         return detail;
     }
 }
