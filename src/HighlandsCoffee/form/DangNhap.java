@@ -7,12 +7,11 @@ import javax.swing.JOptionPane;
 import HighlandsCoffee.DBConnection; 
 public class DangNhap extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(DangNhap.class.getName());
     public DangNhap() {
         initComponents();
         setLocationRelativeTo(null);
     }
-    @SuppressWarnings("unchecked")
+    
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
