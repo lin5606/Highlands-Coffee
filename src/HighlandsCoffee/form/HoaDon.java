@@ -2,411 +2,347 @@ package HighlandsCoffee.form;
 
 import HighlandsCoffee.dao.InvoiceDAO;
 import HighlandsCoffee.dao.InvoiceDetailDAO;
-import HighlandsCoffee.model.Customer;
 import HighlandsCoffee.model.Invoice;
 import HighlandsCoffee.model.InvoiceDetail;
+import HighlandsCoffee.model.Customer;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.ParseException;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class HoaDon extends JPanel {
 
-    private final InvoiceDAO invoiceDAO = new InvoiceDAO();
-    private final InvoiceDetailDAO detailDAO = new InvoiceDetailDAO();
-    private final DefaultTableModel invoiceTableModel = new DefaultTableModel();
-    private final DefaultTableModel detailTableModel = new DefaultTableModel();
-    private final TableRowSorter<DefaultTableModel> invoiceSorter;
+    private JTable tableHoaDon;
+    private DefaultTableModel tableModel;
+    private JTextField txtMaHoaDon, txtNgay, txtKhachHang, txtTongTien;
+    private JTextArea txtChiTiet;
+    private JButton btnThemMoi, btnInHoaDon, btnSua, btnXoa, btnLamMoi;
 
-    private JTextField txtInvoiceId;
-    private JTextField txtInvoiceDate;
-    private JTextField txtCustomerId;
-    private JTextField txtTotalAmount;
-    private JTextField txtTotalTax;
-    private JTextField txtFinalTotal;
-    private JTextField txtSearch;
-    private JTable tblInvoices;
-    private JTable tblDetails;
-
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private InvoiceDAO invoiceDAO = new InvoiceDAO();
+    private InvoiceDetailDAO detailDAO = new InvoiceDetailDAO();
+    private NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     public HoaDon() {
         setLayout(new BorderLayout());
-        setBackground(new Color(248, 249, 250));
-        initComponents();
-        invoiceSorter = new TableRowSorter<>(invoiceTableModel);
-        tblInvoices.setRowSorter(invoiceSorter);
-        loadInvoices();
+        setBackground(new Color(245, 245, 245));
+
+        // ==========================================
+        // 1. PHẦN NHẬP LIỆU (Top)
+        // ==========================================
+        JPanel pnlInput = new JPanel(new GridLayout(2, 4, 10, 15));
+        pnlInput.setBorder(BorderFactory.createTitledBorder("Thông tin Hóa Đơn"));
+        pnlInput.setOpaque(false);
+
+        pnlInput.add(new JLabel("  Mã Hóa Đơn:"));
+        txtMaHoaDon = new JTextField();
+        txtMaHoaDon.setEditable(false);
+        pnlInput.add(txtMaHoaDon);
+
+        pnlInput.add(new JLabel("  Ngày:"));
+        txtNgay = new JTextField();
+        txtNgay.setEditable(false);
+        pnlInput.add(txtNgay);
+
+        pnlInput.add(new JLabel("  Khách Hàng:"));
+        txtKhachHang = new JTextField();
+        txtKhachHang.setEditable(false);
+        pnlInput.add(txtKhachHang);
+
+        pnlInput.add(new JLabel("  Tổng Tiền:"));
+        txtTongTien = new JTextField();
+        txtTongTien.setEditable(false);
+        pnlInput.add(txtTongTien);
+
+        // Chi tiết sản phẩm
+        pnlInput.add(new JLabel("  Chi Tiết:"));
+        txtChiTiet = new JTextArea(3, 20);
+        txtChiTiet.setEditable(false);
+        JScrollPane scrollChiTiet = new JScrollPane(txtChiTiet);
+        pnlInput.add(scrollChiTiet);
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(pnlInput, BorderLayout.NORTH);
+        topPanel.setOpaque(false);
+        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        add(topPanel, BorderLayout.NORTH);
+
+        // ==========================================
+        // 2. PHẦN BẢNG DỮ LIỆU (Center)
+        // ==========================================
+        String[] columns = {"Mã Hóa Đơn", "Ngày", "Khách Hàng", "Tổng Tiền"};
+        tableModel = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tableHoaDon = new JTable(tableModel);
+        tableHoaDon.setRowHeight(30);
+        tableHoaDon.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        tableHoaDon.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        JScrollPane scrollPane = new JScrollPane(tableHoaDon);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+        add(scrollPane, BorderLayout.CENTER);
+
+        // ==========================================
+        // 3. PHẦN NÚT BẤM (Bottom)
+        // ==========================================
+        JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
+        pnlButtons.setOpaque(false);
+
+        btnThemMoi = new JButton("Thêm Mới");
+        btnInHoaDon = new JButton("In Hóa Đơn");
+        btnSua = new JButton("Cập Nhật");
+        btnXoa = new JButton("Xóa");
+        btnLamMoi = new JButton("Làm Mới");
+
+        btnThemMoi.setBackground(new Color(46, 204, 113)); btnThemMoi.setForeground(Color.WHITE);
+        btnInHoaDon.setBackground(new Color(46, 204, 113)); btnInHoaDon.setForeground(Color.WHITE);
+        btnSua.setBackground(new Color(52, 152, 219)); btnSua.setForeground(Color.WHITE);
+        btnXoa.setBackground(new Color(231, 76, 60)); btnXoa.setForeground(Color.WHITE);
+        btnLamMoi.setBackground(new Color(52, 152, 219)); btnLamMoi.setForeground(Color.WHITE);
+
+        btnThemMoi.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnInHoaDon.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnSua.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnXoa.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnLamMoi.setFont(new Font("Segoe UI", Font.BOLD, 14));
+
+        btnThemMoi.setFocusPainted(false); btnThemMoi.setBorderPainted(false); btnThemMoi.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnInHoaDon.setFocusPainted(false); btnInHoaDon.setBorderPainted(false); btnInHoaDon.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnSua.setFocusPainted(false); btnSua.setBorderPainted(false); btnSua.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnXoa.setFocusPainted(false); btnXoa.setBorderPainted(false); btnXoa.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnLamMoi.setFocusPainted(false); btnLamMoi.setBorderPainted(false); btnLamMoi.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        pnlButtons.add(btnThemMoi);
+        pnlButtons.add(btnInHoaDon);
+        pnlButtons.add(btnSua);
+        pnlButtons.add(btnXoa);
+        pnlButtons.add(btnLamMoi);
+        add(pnlButtons, BorderLayout.SOUTH);
+
+        loadDataToTable();
+        setupActions();
+        clearForm();
     }
 
-    private void initComponents() {
-        add(createHeaderPanel(), BorderLayout.NORTH);
-
-        JPanel content = new JPanel(new BorderLayout(16, 16));
-        content.setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
-        content.setBackground(new Color(248, 249, 250));
-
-        content.add(createFilterPanel(), BorderLayout.NORTH);
-        content.add(createInvoiceFormPanel(), BorderLayout.CENTER);
-        content.add(createDetailPanel(), BorderLayout.SOUTH);
-
-        add(content, BorderLayout.CENTER);
+    private void loadDataToTable() {
+        tableModel.setRowCount(0);
+        List<Invoice> list = invoiceDAO.getAllInvoices();
+        for (Invoice inv : list) {
+            String customerName = (inv.getCustomer() != null) ? inv.getCustomer().getName() : "Khách vãng lai";
+            Object[] row = {
+                inv.getInvoiceId(),
+                dateFormat.format(inv.getInvoiceDate()),
+                customerName,
+                currencyFormat.format(inv.getFinalTotal())
+            };
+            tableModel.addRow(row);
+        }
     }
 
-    private JPanel createHeaderPanel() {
-        JPanel header = new JPanel(new BorderLayout());
-        header.setBackground(new Color(238, 238, 238));
-        header.setPreferredSize(new Dimension(100, 70));
-
-        JLabel title = new JLabel("QUẢN LÝ HÓA ĐƠN", SwingConstants.CENTER);
-        title.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        header.add(title, BorderLayout.CENTER);
-
-        return header;
+    private void clearForm() {
+        txtMaHoaDon.setText("");
+        txtNgay.setText("");
+        txtKhachHang.setText("");
+        txtTongTien.setText("");
+        txtChiTiet.setText("");
+        tableHoaDon.clearSelection();
     }
 
-    private JPanel createFilterPanel() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 8));
-        panel.setBackground(new Color(248, 249, 250));
-
-        JLabel lblSearch = new JLabel("Tìm kiếm hóa đơn:");
-        lblSearch.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        txtSearch = createTextField();
-        txtSearch.setPreferredSize(new Dimension(280, 32));
-        txtSearch.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) { filterInvoices(); }
-            public void removeUpdate(DocumentEvent e) { filterInvoices(); }
-            public void changedUpdate(DocumentEvent e) { filterInvoices(); }
-        });
-
-        panel.add(lblSearch);
-        panel.add(txtSearch);
-        return panel;
-    }
-
-    private JPanel createInvoiceFormPanel() {
-        JPanel panel = new JPanel(new BorderLayout(12, 12));
-        panel.setBackground(new Color(248, 249, 250));
-
-        panel.add(createInvoiceInputPanel(), BorderLayout.NORTH);
-        panel.add(createInvoiceTable(), BorderLayout.CENTER);
-
-        return panel;
-    }
-
-    private JPanel createInvoiceInputPanel() {
-        JPanel panel = new JPanel(new BorderLayout(12, 12));
-        panel.setBackground(new Color(248, 249, 250));
-
-        JPanel fields = new JPanel(new GridBagLayout());
-        fields.setBackground(new Color(248, 249, 250));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8);
-        gbc.anchor = GridBagConstraints.WEST;
-
-        JLabel lblInvoiceId = new JLabel("Mã hóa đơn:");
-        JLabel lblDate = new JLabel("Ngày hóa đơn (yyyy-MM-dd):");
-        JLabel lblCustomerId = new JLabel("Mã khách hàng:");
-        JLabel lblTotalAmount = new JLabel("Tổng trước thuế:");
-        JLabel lblTotalTax = new JLabel("Tổng thuế:");
-        JLabel lblFinalTotal = new JLabel("Thành tiền:");
-
-        txtInvoiceId = createTextField();
-        txtInvoiceDate = createTextField();
-        txtCustomerId = createTextField();
-        txtTotalAmount = createTextField();
-        txtTotalTax = createTextField();
-        txtFinalTotal = createTextField();
-
-        txtTotalAmount.setEditable(false);
-        txtTotalTax.setEditable(false);
-        txtFinalTotal.setEditable(false);
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        fields.add(lblInvoiceId, gbc);
-        gbc.gridx = 1;
-        fields.add(txtInvoiceId, gbc);
-
-        gbc.gridx = 2;
-        fields.add(lblDate, gbc);
-        gbc.gridx = 3;
-        fields.add(txtInvoiceDate, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        fields.add(lblCustomerId, gbc);
-        gbc.gridx = 1;
-        fields.add(txtCustomerId, gbc);
-
-        gbc.gridx = 2;
-        fields.add(lblTotalAmount, gbc);
-        gbc.gridx = 3;
-        fields.add(txtTotalAmount, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        fields.add(lblTotalTax, gbc);
-        gbc.gridx = 1;
-        fields.add(txtTotalTax, gbc);
-
-        gbc.gridx = 2;
-        fields.add(lblFinalTotal, gbc);
-        gbc.gridx = 3;
-        fields.add(txtFinalTotal, gbc);
-
-        panel.add(fields, BorderLayout.CENTER);
-        panel.add(createInvoiceButtonPanel(), BorderLayout.SOUTH);
-
-        return panel;
-    }
-
-    private JPanel createInvoiceButtonPanel() {
-        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 16, 0));
-        buttons.setBackground(new Color(248, 249, 250));
-
-        JButton btnAdd = createActionButton("Thêm hóa đơn");
-        JButton btnUpdate = createActionButton("Sửa hóa đơn");
-        JButton btnDelete = createActionButton("Xóa hóa đơn");
-        JButton btnReset = createActionButton("Làm mới");
-
-        btnAdd.addActionListener(e -> addInvoice());
-        btnUpdate.addActionListener(e -> updateInvoice());
-        btnDelete.addActionListener(e -> deleteInvoice());
-        btnReset.addActionListener(e -> resetForm());
-
-        buttons.add(btnAdd);
-        buttons.add(btnUpdate);
-        buttons.add(btnDelete);
-        buttons.add(btnReset);
-
-        return buttons;
-    }
-
-    private JScrollPane createInvoiceTable() {
-        invoiceTableModel.setColumnIdentifiers(new Object[]{"Mã hóa đơn", "Ngày", "Mã KH", "Tổng trước thuế", "Tổng thuế", "Thành tiền"});
-        tblInvoices = new JTable(invoiceTableModel);
-        tblInvoices.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        tblInvoices.setRowHeight(26);
-        tblInvoices.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tblInvoices.addMouseListener(new MouseAdapter() {
+    private void setupActions() {
+        // CLICK BẢNG
+        tableHoaDon.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (tblInvoices.getSelectedRow() >= 0) {
-                    fillInvoiceForm();
+                int row = tableHoaDon.getSelectedRow();
+                if (row >= 0) {
+                    String invoiceId = tableHoaDon.getValueAt(row, 0).toString();
+                    loadInvoiceDetails(invoiceId);
                 }
             }
         });
 
-        return new JScrollPane(tblInvoices);
-    }
+        // NÚT THÊM MỚI HÓA ĐƠN
+        btnThemMoi.addActionListener(e -> {
+            clearForm();
+            String nextId = invoiceDAO.generateNextInvoiceID();
+            txtMaHoaDon.setText(nextId);
+            JOptionPane.showMessageDialog(this, "Để thêm hóa đơn mới, vui lòng sử dụng phần Bán Hàng.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        });
 
-    private JPanel createDetailPanel() {
-        JPanel panel = new JPanel(new BorderLayout(12, 12));
-        panel.setBackground(new Color(248, 249, 250));
-        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)), "Chi tiết hóa đơn"));
+        // NÚT IN HÓA ĐƠN
+        btnInHoaDon.addActionListener(e -> {
+            int selectedRow = tableHoaDon.getSelectedRow();
+            if (selectedRow >= 0) {
+                String invoiceId = tableHoaDon.getValueAt(selectedRow, 0).toString();
+                printInvoice(invoiceId);
+            } else {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn một hóa đơn để in!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            }
+        });
 
-        detailTableModel.setColumnIdentifiers(new Object[]{"Mã chi tiết", "Mã hóa đơn", "Sản phẩm", "Số lượng", "Đơn giá", "Thuế", "Thành tiền"});
-        tblDetails = new JTable(detailTableModel);
-        tblDetails.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        tblDetails.setRowHeight(24);
+        // NÚT SỬA HÓA ĐƠN
+        btnSua.addActionListener(e -> {
+            int selectedRow = tableHoaDon.getSelectedRow();
+            if (selectedRow >= 0) {
+                String invoiceId = tableHoaDon.getValueAt(selectedRow, 0).toString();
+                Invoice inv = invoiceDAO.getInvoiceById(invoiceId);
+                if (inv != null) {
+                    // Có thể cho phép sửa ngày hoặc khách hàng, nhưng để đơn giản, chỉ update totals nếu cần
+                    // Ở đây, giả sử không sửa gì, chỉ thông báo
+                    JOptionPane.showMessageDialog(this, "Chức năng sửa hóa đơn chưa được triển khai đầy đủ.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn một hóa đơn để sửa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            }
+        });
 
-        panel.add(new JScrollPane(tblDetails), BorderLayout.CENTER);
-        return panel;
-    }
+        // NÚT XÓA HÓA ĐƠN
+        btnXoa.addActionListener(e -> {
+            int selectedRow = tableHoaDon.getSelectedRow();
+            if (selectedRow >= 0) {
+                String invoiceId = tableHoaDon.getValueAt(selectedRow, 0).toString();
+                int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa hóa đơn " + invoiceId + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    if (invoiceDAO.deleteInvoice(invoiceId)) {
+                        JOptionPane.showMessageDialog(this, "Xóa hóa đơn thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        loadDataToTable();
+                        clearForm();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Lỗi khi xóa hóa đơn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn một hóa đơn để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            }
+        });
 
-    private JTextField createTextField() {
-        JTextField field = new JTextField();
-        field.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        field.setBorder(BorderFactory.createLineBorder(new Color(209, 209, 209)));
-        field.setPreferredSize(new Dimension(200, 32));
-        return field;
-    }
-
-    private JButton createActionButton(String text) {
-        JButton button = new JButton(text);
-        button.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        button.setBackground(new Color(76, 175, 80));
-        button.setForeground(Color.WHITE);
-        button.setFocusPainted(false);
-        button.setPreferredSize(new Dimension(150, 36));
-        return button;
-    }
-
-    private void loadInvoices() {
-        invoiceTableModel.setRowCount(0);
-        List<Invoice> invoices = invoiceDAO.getAllInvoices();
-        for (Invoice invoice : invoices) {
-            invoiceTableModel.addRow(new Object[]{
-                    invoice.getInvoiceId(),
-                    invoice.getInvoiceDate() != null ? dateFormat.format(invoice.getInvoiceDate()) : "",
-                    invoice.getCustomer() != null ? invoice.getCustomer().getCustomer_id() : "",
-                    invoice.getTotalAmount(),
-                    invoice.getTotalTax(),
-                    invoice.getFinalTotal()
-            });
-        }
-    }
-
-    private void fillInvoiceForm() {
-        int viewRow = tblInvoices.getSelectedRow();
-        if (viewRow < 0) {
-            return;
-        }
-        int modelRow = tblInvoices.convertRowIndexToModel(viewRow);
-        txtInvoiceId.setText(invoiceTableModel.getValueAt(modelRow, 0).toString());
-        txtInvoiceDate.setText(invoiceTableModel.getValueAt(modelRow, 1).toString());
-        txtCustomerId.setText(invoiceTableModel.getValueAt(modelRow, 2).toString());
-        txtTotalAmount.setText(invoiceTableModel.getValueAt(modelRow, 3).toString());
-        txtTotalTax.setText(invoiceTableModel.getValueAt(modelRow, 4).toString());
-        txtFinalTotal.setText(invoiceTableModel.getValueAt(modelRow, 5).toString());
-
-        loadInvoiceDetails(txtInvoiceId.getText().trim());
+        // NÚT LÀM MỚI
+        btnLamMoi.addActionListener(e -> {
+            loadDataToTable();
+            clearForm();
+        });
     }
 
     private void loadInvoiceDetails(String invoiceId) {
-        detailTableModel.setRowCount(0);
-        if (invoiceId.isEmpty()) {
-            return;
-        }
-        List<InvoiceDetail> details = detailDAO.getInvoiceDetailsByInvoiceId(invoiceId);
-        for (InvoiceDetail detail : details) {
-            detailTableModel.addRow(new Object[]{
-                    detail.getDetail_id(),
-                    detail.getInvoice_id(),
-                    detail.getProduct_name(),
-                    detail.getQuantity(),
-                    detail.getUnit_price(),
-                    detail.getTax_rate(),
-                    detail.getTotal_price()
-            });
-        }
-    }
+        Invoice inv = invoiceDAO.getInvoiceById(invoiceId);
+        if (inv != null) {
+            txtMaHoaDon.setText(inv.getInvoiceId());
+            txtNgay.setText(dateFormat.format(inv.getInvoiceDate()));
+            String customerName = (inv.getCustomer() != null) ? inv.getCustomer().getName() : "Khách vãng lai";
+            txtKhachHang.setText(customerName);
+            txtTongTien.setText(currencyFormat.format(inv.getFinalTotal()));
 
-    private void addInvoice() {
-        if (!validateInvoiceForm()) {
-            return;
-        }
-
-        Invoice invoice = buildInvoiceFromForm();
-        boolean success = invoiceDAO.insertInvoice(invoice);
-        if (success) {
-            JOptionPane.showMessageDialog(this, "Thêm hóa đơn thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-            loadInvoices();
-            resetForm();
-        } else {
-            JOptionPane.showMessageDialog(this, "Thêm hóa đơn thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            // Load chi tiết
+            List<InvoiceDetail> details = detailDAO.getInvoiceDetailsByInvoiceId(invoiceId);
+            StringBuilder sb = new StringBuilder();
+            for (InvoiceDetail detail : details) {
+                sb.append(detail.getProduct().getName())
+                  .append(" x").append(detail.getQuantity())
+                  .append(" = ").append(currencyFormat.format(detail.getPrice() * detail.getQuantity()))
+                  .append("\n");
+            }
+            sb.append("\nTổng trước thuế: ").append(currencyFormat.format(inv.getTotalAmount()));
+            sb.append("\nThuế: ").append(currencyFormat.format(inv.getTotalTax()));
+            sb.append("\nTổng cộng: ").append(currencyFormat.format(inv.getFinalTotal()));
+            txtChiTiet.setText(sb.toString());
         }
     }
 
-    private void updateInvoice() {
-        if (!validateInvoiceForm()) {
-            return;
-        }
+    private void printInvoice(String invoiceId) {
+        Invoice inv = invoiceDAO.getInvoiceById(invoiceId);
+        if (inv == null) return;
 
-        Invoice invoice = buildInvoiceFromForm();
-        boolean success = invoiceDAO.updateInvoice(invoice);
-        if (success) {
-            JOptionPane.showMessageDialog(this, "Cập nhật hóa đơn thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-            loadInvoices();
-        } else {
-            JOptionPane.showMessageDialog(this, "Cập nhật hóa đơn thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        }
-    }
+        PrinterJob job = PrinterJob.getPrinterJob();
+        job.setPrintable(new InvoicePrintable(inv, detailDAO, currencyFormat, dateFormat));
 
-    private void deleteInvoice() {
-        int viewRow = tblInvoices.getSelectedRow();
-        if (viewRow < 0) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn hóa đơn để xóa.", "Chú ý", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        int modelRow = tblInvoices.convertRowIndexToModel(viewRow);
-        String invoiceId = invoiceTableModel.getValueAt(modelRow, 0).toString();
-        int confirmed = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa hóa đơn này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
-        if (confirmed != JOptionPane.YES_OPTION) {
-            return;
-        }
-
-        boolean success = invoiceDAO.deleteInvoice(invoiceId);
-        if (success) {
-            JOptionPane.showMessageDialog(this, "Xóa hóa đơn thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-            loadInvoices();
-            resetForm();
-            detailTableModel.setRowCount(0);
-        } else {
-            JOptionPane.showMessageDialog(this, "Xóa hóa đơn thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        if (job.printDialog()) {
+            try {
+                job.print();
+            } catch (PrinterException ex) {
+                JOptionPane.showMessageDialog(this, "Lỗi khi in: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
+}
 
-    private boolean validateInvoiceForm() {
-        if (txtInvoiceId.getText().trim().isEmpty() || txtInvoiceDate.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Mã hóa đơn và ngày hóa đơn không được để trống.", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        try {
-            dateFormat.parse(txtInvoiceDate.getText().trim());
-        } catch (ParseException e) {
-            JOptionPane.showMessageDialog(this, "Ngày hóa đơn không hợp lệ. Định dạng phải là yyyy-MM-dd.", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        return true;
+class InvoicePrintable implements java.awt.print.Printable {
+
+    private Invoice invoice;
+    private InvoiceDetailDAO detailDAO;
+    private NumberFormat currencyFormat;
+    private SimpleDateFormat dateFormat;
+
+    public InvoicePrintable(Invoice invoice, InvoiceDetailDAO detailDAO, NumberFormat currencyFormat, SimpleDateFormat dateFormat) {
+        this.invoice = invoice;
+        this.detailDAO = detailDAO;
+        this.currencyFormat = currencyFormat;
+        this.dateFormat = dateFormat;
     }
 
-    private Invoice buildInvoiceFromForm() {
-        Invoice invoice = new Invoice();
-        invoice.setInvoiceId(txtInvoiceId.getText().trim());
-        try {
-            Date date = dateFormat.parse(txtInvoiceDate.getText().trim());
-            invoice.setInvoiceDate(date);
-        } catch (ParseException e) {
-            invoice.setInvoiceDate(new Date());
+    @Override
+    public int print(java.awt.Graphics graphics, java.awt.print.PageFormat pageFormat, int pageIndex) {
+        if (pageIndex > 0) {
+            return NO_SUCH_PAGE;
         }
 
-        Customer customer = new Customer();
-        customer.setCustomer_id(txtCustomerId.getText().trim());
-        invoice.setCustomer(customer);
+        Graphics2D g2d = (Graphics2D) graphics;
+        g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 
-        invoice.setTotalAmount(parseDouble(txtTotalAmount.getText().trim()));
-        invoice.setTotalTax(parseDouble(txtTotalTax.getText().trim()));
-        invoice.setFinalTotal(parseDouble(txtFinalTotal.getText().trim()));
+        Font font = new Font("Arial", Font.PLAIN, 12);
+        g2d.setFont(font);
 
-        return invoice;
-    }
+        int y = 50;
 
-    private double parseDouble(String value) {
-        try {
-            return Double.parseDouble(value);
-        } catch (NumberFormatException ex) {
-            return 0;
+        // Header
+        Font boldFont = new Font("Arial", Font.BOLD, 20);
+        g2d.setFont(boldFont);
+        g2d.drawString("HÓA ĐƠN THANH TOÁN", 200, y);
+        y += 40;
+
+        g2d.setFont(font);
+        g2d.drawString("Mã hóa đơn: " + invoice.getInvoiceId(), 50, y);
+        y += 20;
+        g2d.drawString("Ngày: " + dateFormat.format(invoice.getInvoiceDate()), 50, y);
+        y += 20;
+        String customer = (invoice.getCustomer() != null) ? invoice.getCustomer().getName() : "Khách vãng lai";
+        g2d.drawString("Khách hàng: " + customer, 50, y);
+        y += 40;
+
+        // Chi tiết
+        g2d.drawString("Chi Tiết Sản Phẩm:", 50, y);
+        y += 20;
+        List<InvoiceDetail> details = detailDAO.getInvoiceDetailsByInvoiceId(invoice.getInvoiceId());
+        for (InvoiceDetail d : details) {
+            g2d.drawString(d.getProduct().getName() + " x" + d.getQuantity() + " = " + currencyFormat.format(d.getPrice() * d.getQuantity()), 70, y);
+            y += 20;
         }
-    }
+        y += 20;
 
-    private void filterInvoices() {
-        String text = txtSearch.getText().trim();
-        if (text.isEmpty()) {
-            invoiceSorter.setRowFilter(null);
-        } else {
-            invoiceSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
-        }
-    }
+        // Tổng kết
+        g2d.drawString("Tổng trước thuế: " + currencyFormat.format(invoice.getTotalAmount()), 300, y);
+        y += 20;
+        g2d.drawString("Thuế: " + currencyFormat.format(invoice.getTotalTax()), 300, y);
+        y += 20;
+        g2d.drawString("Tổng cộng: " + currencyFormat.format(invoice.getFinalTotal()), 300, y);
+        y += 40;
 
-    private void resetForm() {
-        txtInvoiceId.setText("");
-        txtInvoiceDate.setText("");
-        txtCustomerId.setText("");
-        txtTotalAmount.setText("");
-        txtTotalTax.setText("");
-        txtFinalTotal.setText("");
-        tblInvoices.clearSelection();
+        // Footer
+        Font italicFont = new Font("Arial", Font.ITALIC, 14);
+        g2d.setFont(italicFont);
+        g2d.drawString("Cảm ơn quý khách đã mua hàng!", 200, y);
+
+        return PAGE_EXISTS;
     }
 }
